@@ -1,0 +1,251 @@
+" vim:foldmethod=marker:foldlevel=0
+
+"VIM-PLUG WORK {{{
+
+call plug#begin('~/vimfiles/bundle')
+
+Plug 'vim-airline/vim-airline'     " airline
+Plug 'vim-airline/vim-airline-themes'
+
+Plug 'altercation/vim-colors-solarized' " solarized theme
+
+Plug 'kien/ctrlp.vim'              " control p
+
+Plug 'tpope/vim-fugitive'          " fugitive git
+
+Plug 'scrooloose/nerdtree'         " nerd tree
+
+Plug 'tpope/vim-commentary'        " commenting stuff (gc)
+
+Plug 'tpope/vim-surround'          " surround. jesus tim pope is good
+
+Plug 'leafgarland/typescript-vim'  " typescript syntax
+
+Plug 'clausreinke/typescript-tools.vim', { 'do': 'npm install' }
+
+Plug 'morhetz/gruvbox'             " Gruvbox theme
+
+Plug 'scrooloose/syntastic'        " Syntax checker
+
+Plug 'Shougo/vimproc.vim', {'do' : 'make'}   " async support library for other plugins
+
+Plug 'Quramy/tsuquyomi'            " typescript everything
+
+Plug 'jason0x43/vim-js-indent'     " ts and js indent fix
+
+Plug 'nathanaelkane/vim-indent-guides' "indent guides
+
+Plug 'Valloric/YouCompleteMe'           "code completion
+
+Plug 'raimondi/delimitmate'         " auto close brackets, parentheses, ect...
+
+Plug 'airblade/vim-gitgutter'       " vim gutter
+
+call plug#end()                    " required
+
+" }}}
+"Colors and Fonts {{{
+
+syntax on     " Enable syntax hilighting
+
+colorscheme Gruvbox
+set background=dark
+
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
+
+
+" }}}
+"UI config {{{
+
+
+" Change cursor shape between insert and normal mode in iTerm2.app
+if $TERM_PROGRAM =~ "iTerm"
+    let &t_SI = "\<Esc>]50;CursorShape=1\x7" " Vertical bar in insert mode
+    let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
+endif
+
+set noerrorbells visualbell t_vb=     " no annoying sounds or flashing
+autocmd GUIEnter * set visualbell t_vb=
+
+set noshowmode " stop showing mode in the bottom bar. lightline does that
+
+set hidden   " Make it less anoying about saving when switching windows
+set autoread " Make it less anoying about files changing while open
+
+set wildmenu " Better command line completion
+
+set showcmd  " Show partial commands in the last line of the screen
+
+set lazyredraw  " dont redrqw during macros (makes it go faster)
+
+set mouse=a  " Enable use of the mouse for all modes
+
+" Set the command window height to 2 lines, to avoid many cases of having to
+" press <Enter> to continue
+set cmdheight=2
+
+set splitright   "split below and right by defualt
+set splitbelow
+
+set scrolloff=5     "start scrolling up and down earlier
+set sidescroll=1     "stop scrolling half the god damn screen sideways
+set sidescrolloff=2
+
+set ruler     " Show line and column number in bottom ruler
+
+set number    " Show line numbers
+
+set nowrap   " Stop wrapping text god damnit
+
+set laststatus=2     "always show the status bar
+
+set showmatch    " show matching parens
+set mat=2        " but shorter. less annoying like this
+
+set modelines=1  " the first line can set vim settings (lets the indenting work in .vimrc)
+
+" }}}
+"Spaces, Tabs, and Indentation {{{
+
+set autoindent  "smarter indenting
+set smartindent
+filetype indent on
+filetype plugin on
+
+set tabstop=4        " show existing tab with 4 spaces width
+set shiftwidth=4     " when indenting with '>', use 4 spaces width
+set expandtab        " On pressing tab, insert 4 spaces
+set softtabstop=4    " when hitting backspace pretend like tab is removed even if spaces
+set autoindent       " auto indent but also read it from the file
+set copyindent
+set smarttab
+
+" }}}
+"Searching {{{
+
+" Highlight searches (use <C-L> to temporarily turn off highlighting; see the
+" mapping of <C-L> below)
+set hlsearch
+
+set ignorecase   " Use case insensitive search, except when using capital letters
+set smartcase
+set incsearch    " Search scrolls to match automatically
+
+" }}}
+"Folding {{{
+
+set foldenable   " enable folding
+
+" }}}
+"Custom Keymaps {{{
+
+"set the leader
+let mapleader = ","
+
+"leader f - alternate fold
+noremap <leader>f za
+
+"leader e v - Edit Vim.rc in a new vsplit
+noremap <leader>ev :vs $MYVIMRC<cr>
+"leader s v - Source Vim.rc
+noremap <leader>sv :so $MYVIMRC<cr> :AirlineRefresh<cr>
+
+"leader b b - Buffer Back
+noremap <leader>bb :bp<cr>
+"leader b n - Buffer Next
+noremap <leader>bn :bn<cr>
+
+"leader == - Fix whole file indentation
+noremap <leader>== gg=G''
+
+"leader ap - Add Parameter to next function on the line
+noremap <leader>ap f)i,
+
+"insert mode control u - upper case word
+inoremap <C-u> <esc>viwUea
+
+"insert mode control space - suggestions
+imap <C-Space> <C-X><C-O>
+
+"insert mode jk - escape
+inoremap jk <esc>
+
+" Make side scrolling faster
+noremap <C-l> 10zl
+noremap <C-h> 10zh
+
+" Map <C-o> (redraw screen) to also turn off search highlighting until the next search
+nnoremap <C-o> :nohl<CR><C-L>
+
+" switch from light theme to dark theme
+map <F8> :let &background = ( &background == "dark"? "light" : "dark" )<CR>
+
+" shift line up/down with alt arrow keys
+nnoremap <A-down> ddp
+nnoremap <A-up> ddkP
+
+" fuzzy finder keybinding
+noremap \ :FufFile <CR>
+
+" nerd tree keybinding
+nmap <C-b> :NERDTreeToggle<CR>
+
+" +++COMMAND LINE REMAPS+++
+cno $b cd ~/Projects/Bespoke/bespoke-concierge
+cno $c cd C:\Users\mattp_000\Dropbox\Class-Notes
+
+" }}}
+"Backups {{{
+
+set nobackup     " Stop doing all the backup stuff. Its gross
+set noswapfile
+set nowb
+
+" }}}
+" Misc {{{
+
+set ttyfast "faster redraw
+
+set backspace=indent,eol,start   " Allow backspacing over autoindent, line breaks and start of insert action
+
+"syntastic stuff
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+
+"space> }}}
+"Airline {{{
+
+set encoding=utf-8
+
+let g:airline_powerline_fonts = 1
+let g:airline_theme='gruvbox'
+
+let g:airline_section_z='%p%%  %l: %c'
+let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+let g:airline_skip_empty_sections = 1
+
+"}}}
+"Typescript {{{
+let g:tsuquyomi_disable_quickfix = 1
+let g:syntastic_typescript_checkers = ['tsuquyomi'] " You shouldn't use 'tsc' checker.
+let g:tsuquyomi_use_local_typescript = 0
+
+autocmd FileType typescript setlocal balloonexpr=tsuquyomi#balloonexpr()
+"}}}
+"Ctrl P {{{
+let g:ctrlp_custom_ignore = 'node_modules\|platforms\|git'
+"}}}
+"Delimate {{{
+
+let g:delimitMate_expand_cr = 1
+
+"}}}
