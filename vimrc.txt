@@ -1,64 +1,36 @@
 " vim:foldmethod=marker:foldlevel=0
 
-"VIM-PLUG WORK {{{
-
+"Plugins {{{
 call plug#begin('~/vimfiles/bundle')
 
-Plug 'vim-airline/vim-airline'     " airline
+Plug 'vim-airline/vim-airline'              " airline
 Plug 'vim-airline/vim-airline-themes'
+Plug 'kien/ctrlp.vim'                       " control p
+Plug 'tpope/vim-fugitive'                   " fugitive git
+Plug 'scrooloose/nerdtree'                  " nerd tree
+Plug 'tpope/vim-commentary'                 " commenting stuff (gc)
+Plug 'tpope/vim-surround'                   " surround. jesus tim pope is good
+Plug 'morhetz/gruvbox'                      " Gruvbox theme
+Plug 'w0rp/ale'                             " Async linter
+Plug 'raimondi/delimitmate'                 " auto close brackets, parentheses, ect...
+Plug 'airblade/vim-gitgutter'               " git gutter
+Plug 'skywind3000/asyncrun.vim'             " async vim script runner
 
-Plug 'altercation/vim-colors-solarized' " solarized theme
+" JS / JSX support
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 
-Plug 'kien/ctrlp.vim'              " control p
-
-Plug 'tpope/vim-fugitive'          " fugitive git
-
-Plug 'scrooloose/nerdtree'         " nerd tree
-
-Plug 'tpope/vim-commentary'        " commenting stuff (gc)
-
-Plug 'tpope/vim-surround'          " surround. jesus tim pope is good
-
-Plug 'leafgarland/typescript-vim'  " typescript syntax
-
-Plug 'clausreinke/typescript-tools.vim', { 'do': 'npm install' }
-
-Plug 'morhetz/gruvbox'             " Gruvbox theme
-
-Plug 'scrooloose/syntastic'        " Syntax checker
-
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}   " async support library for other plugins
-
-Plug 'Quramy/tsuquyomi'            " typescript everything
-
-Plug 'jason0x43/vim-js-indent'     " ts and js indent fix
-
-Plug 'nathanaelkane/vim-indent-guides' "indent guides
-
-Plug 'Valloric/YouCompleteMe'           "code completion
-
-Plug 'raimondi/delimitmate'         " auto close brackets, parentheses, ect...
-
-Plug 'airblade/vim-gitgutter'       " vim gutter
-
-call plug#end()                    " required
-
+call plug#end()
 " }}}
 "Colors and Fonts {{{
-
 syntax on     " Enable syntax hilighting
-
 colorscheme Gruvbox
 set background=dark
 
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
-
-
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11
 " }}}
 "UI config {{{
-
-
-" Change cursor shape between insert and normal mode in iTerm2.app
+" Change cursor shape between insert and normal mode in iTerm2
 if $TERM_PROGRAM =~ "iTerm"
     let &t_SI = "\<Esc>]50;CursorShape=1\x7" " Vertical bar in insert mode
     let &t_EI = "\<Esc>]50;CursorShape=0\x7" " Block in normal mode
@@ -67,7 +39,7 @@ endif
 set noerrorbells visualbell t_vb=     " no annoying sounds or flashing
 autocmd GUIEnter * set visualbell t_vb=
 
-set noshowmode " stop showing mode in the bottom bar. lightline does that
+set noshowmode " stop showing mode in the bottom bar. airline does that
 
 set hidden   " Make it less anoying about saving when switching windows
 set autoread " Make it less anoying about files changing while open
@@ -76,7 +48,7 @@ set wildmenu " Better command line completion
 
 set showcmd  " Show partial commands in the last line of the screen
 
-set lazyredraw  " dont redrqw during macros (makes it go faster)
+set lazyredraw  " dont redraw during macros (makes it go faster)
 
 set mouse=a  " Enable use of the mouse for all modes
 
@@ -88,7 +60,7 @@ set splitright   "split below and right by defualt
 set splitbelow
 
 set scrolloff=5     "start scrolling up and down earlier
-set sidescroll=1     "stop scrolling half the god damn screen sideways
+set sidescroll=1    "stop scrolling half the god damn screen sideways
 set sidescrolloff=2
 
 set ruler     " Show line and column number in bottom ruler
@@ -103,10 +75,8 @@ set showmatch    " show matching parens
 set mat=2        " but shorter. less annoying like this
 
 set modelines=1  " the first line can set vim settings (lets the indenting work in .vimrc)
-
 " }}}
 "Spaces, Tabs, and Indentation {{{
-
 set autoindent  "smarter indenting
 set smartindent
 filetype indent on
@@ -119,28 +89,26 @@ set softtabstop=4    " when hitting backspace pretend like tab is removed even i
 set autoindent       " auto indent but also read it from the file
 set copyindent
 set smarttab
-
 " }}}
 "Searching {{{
-
-" Highlight searches (use <C-L> to temporarily turn off highlighting; see the
-" mapping of <C-L> below)
+"
+" Highlight searches (use <C-o> to temporarily turn off highlighting; see the
+" mapping of <C-o> below)
 set hlsearch
 
 set ignorecase   " Use case insensitive search, except when using capital letters
 set smartcase
 set incsearch    " Search scrolls to match automatically
 
+let g:NERDTreeRespectWildIgnore = 1         " nerdtree respect wildignore
 " }}}
 "Folding {{{
-
 set foldenable   " enable folding
-
 " }}}
 "Custom Keymaps {{{
-
+"
 "set the leader
-let mapleader = ","
+let mapleader = "\<Space>"
 
 "leader f - alternate fold
 noremap <leader>f za
@@ -154,6 +122,8 @@ noremap <leader>sv :so $MYVIMRC<cr> :AirlineRefresh<cr>
 noremap <leader>bb :bp<cr>
 "leader b n - Buffer Next
 noremap <leader>bn :bn<cr>
+"leader b d - Buffer Delete
+noremap <leader>bd :bd<cr>
 
 "leader == - Fix whole file indentation
 noremap <leader>== gg=G''
@@ -180,72 +150,53 @@ nnoremap <C-o> :nohl<CR><C-L>
 " switch from light theme to dark theme
 map <F8> :let &background = ( &background == "dark"? "light" : "dark" )<CR>
 
-" shift line up/down with alt arrow keys
-nnoremap <A-down> ddp
-nnoremap <A-up> ddkP
-
-" fuzzy finder keybinding
-noremap \ :FufFile <CR>
-
 " nerd tree keybinding
 nmap <C-b> :NERDTreeToggle<CR>
 
-" +++COMMAND LINE REMAPS+++
-cno $b cd ~/Projects/Bespoke/bespoke-concierge
-cno $c cd C:\Users\mattp_000\Dropbox\Class-Notes
-
+" better window control
+noremap <leader>w <C-w>
 " }}}
 "Backups {{{
-
 set nobackup     " Stop doing all the backup stuff. Its gross
 set noswapfile
 set nowb
-
 " }}}
 " Misc {{{
-
 set ttyfast "faster redraw
 
 set backspace=indent,eol,start   " Allow backspacing over autoindent, line breaks and start of insert action
 
-"syntastic stuff
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
 let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
 
-"space> }}}
+" }}}
 "Airline {{{
 
 set encoding=utf-8
 
-let g:airline_powerline_fonts = 1
 let g:airline_theme='gruvbox'
 
 let g:airline_section_z='%p%%  %l: %c'
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 let g:airline_skip_empty_sections = 1
 
-"}}}
-"Typescript {{{
-let g:tsuquyomi_disable_quickfix = 1
-let g:syntastic_typescript_checkers = ['tsuquyomi'] " You shouldn't use 'tsc' checker.
-let g:tsuquyomi_use_local_typescript = 0
+" Tabline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
 
-autocmd FileType typescript setlocal balloonexpr=tsuquyomi#balloonexpr()
 "}}}
 "Ctrl P {{{
 let g:ctrlp_custom_ignore = 'node_modules\|platforms\|git'
+" add a keymap for leader p
+noremap <leader>p :CtrlP<cr>
 "}}}
 "Delimate {{{
-
 let g:delimitMate_expand_cr = 1
-
+"}}}
+"Ale {{{
+let g:ale_linters = {'javascript': ['eslint']}
+"}}}
+"JS scripts {{{
+autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 "}}}
